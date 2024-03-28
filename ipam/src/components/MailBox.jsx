@@ -1,71 +1,53 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import useRequireAuth from "../hooks/useRequireAuth";
-import { List, Typography, Button } from "antd";
-import { Popover } from "antd";
-import {
-  DeleteOutlined,
-  RightOutlined,
-  LeftOutlined,
-  DownOutlined,
-} from "@ant-design/icons";
-import Navbar from "./Navbar";
-
-import {
-  MailOutlined,
-  CalendarOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+import { Typography, Button } from "antd";
+import MailBoxNav from "./MailBoxNav";
+import MsgList from "./MsgList";
 import SendButton from "./SendBtn";
-import { useNavigate } from "react-router-dom";
+import MsgContent from "./MsgContent";
 
 const MailBox = () => {
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [ENDPOINT, setENDPOINT] = useState('fetch-emails');
   const auth = useRequireAuth();
-  const navigate = useNavigate();
+const fetchMessages = async (ENDPOINT) => {
+    try {
+      if (!auth) {
+        return;
+      }
+     
+      const token = JSON.parse(localStorage.getItem("token"));
+      const response = await axios.get(
+        `http://localhost:3005/${ENDPOINT}`,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/sign-in");
-    // Redirect to login page or update state to reflect logout
+      if (response.status === 200) {
+        if (Array.isArray(response.data)) {
+         setMessages(response.data);
+         console.log(response.data);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
   };
-
   useEffect(() => {
     let intervalId;
-
-    const fetchMessages = async () => {
-      try {
-        if (!auth) return;
-
-        const token = JSON.parse(localStorage.getItem("token"));
-        const response = await axios.get(
-          "https://api.ahmads.dev/fetch-emails",
-          {
-            headers: {
-              Authorization: token,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          if (Array.isArray(response.data)) {
-            setMessages(response.data);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      }
-    };
-
     if (auth) {
-      fetchMessages(); // Fetch messages immediately
-      intervalId = setInterval(fetchMessages, 10000); // Fetch messages every 30 seconds
+      fetchMessages(ENDPOINT); 
+      intervalId = setInterval(() => fetchMessages(ENDPOINT), 10000);
     }
 
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount or auth change
-  }, [auth]);
+    return () => clearInterval(intervalId); 
+  }, [auth, ENDPOINT]);
 
   const handleListClick = async (message, index) => {
     setSelectedMessage(message);
@@ -73,7 +55,7 @@ const MailBox = () => {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
       const response = await axios.post(
-        "https://api.ahmads.dev/mark-as-seen",
+        "http://localhost:3005/mark-as-seen",
         {
           uid: message.uid,
         },
@@ -84,7 +66,6 @@ const MailBox = () => {
         }
       );
       if (response.status === 200) {
-        // Update the seen status of the message in the state
         setMessages(
           messages.map((msg) =>
             msg.uid === message.uid ? { ...msg, seen: true } : msg
@@ -116,7 +97,6 @@ const MailBox = () => {
         }
       );
       if (response.status === 200) {
-        // Remove the message from the state
         setMessages(messages.filter((msg) => msg.uid !== uid));
         setSelectedMessage(null);
         setSelectedIndex(null);
@@ -139,21 +119,16 @@ const MailBox = () => {
       setSelectedIndex(selectedIndex - 1);
     }
   };
+  const handleSwitch = (e) => {
+    setENDPOINT(e.key);
+    fetchMessages(e.key);
+    setSelectedMessage(null);
+    setSelectedIndex(null);
+  };
 
   return (
     <div className="box-container">
-      <div className="left-icons">
-        <Popover content={<Navbar />} trigger={"click"}>
-          <Button>Menu</Button>
-        </Popover>
-      </div>
-      <Button
-        icon={<LogoutOutlined style={{ color: "red" }} />}
-        onClick={handleLogout}
-        className="logout-button"
-      >
-        Logout
-      </Button>
+      <MailBoxNav handleSwitch={handleSwitch}/>
       <div className="box">
         <SendButton />
 
@@ -162,61 +137,14 @@ const MailBox = () => {
             {messages.length === 0 ? (
               <Typography.Text>No messages to display</Typography.Text>
             ) : (
-              <List
-                itemLayout="horizontal"
-                dataSource={messages}
-                renderItem={(message, index) => (
-                  <List.Item
-                    style={{
-                      backgroundColor: message.seen ? "white" : "#f0f0f0",
-                    }}
-                    actions={[
-                      <Button
-                        icon={<DeleteOutlined />}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteMessage(message.uid);
-                        }}
-                      />,
-                      <Button icon={<CalendarOutlined />} />,
-                    ]}
-                    onClick={() => handleListClick(message, index)}
-                  >
-                    <List.Item.Meta
-                      avatar={<Button icon={<MailOutlined />} />}
-                      description={`From: ${message.from}`}
-                    />
-                    <div>{message.date}</div>
-                  </List.Item>
-                )}
-              />
+              <MsgList messages={messages} handleDeleteMessage={handleDeleteMessage}
+               handleListClick={handleListClick} />
             )}
           </div>
         ) : (
-          <div className="msg-content">
-            <div className="btn-nav">
-              <Button onClick={handleBackToList}>Back To List</Button>
-              <Button
-                className="prev-btn"
-                icon={<LeftOutlined />}
-                onClick={handlePrevMessage}
-                disabled={selectedIndex === 0}
-              />
-              <Button
-                className="next-btn"
-                icon={<RightOutlined />}
-                onClick={handleNextMessage}
-                disabled={selectedIndex === messages.length - 1}
-              />
-            </div>
-            <div
-              className="msg"
-              dangerouslySetInnerHTML={{
-                __html: selectedMessage.html,
-              }}
-            ></div>
-            <div className="btn-nav"></div>
-          </div>
+       <MsgContent selectedMessage={selectedMessage} handleNextMessage={handleNextMessage}
+        handlePrevMessage={handlePrevMessage} handleBackToList={handleBackToList} messages={messages}
+         selectedIndex={selectedIndex} />
         )}
       </div>
     </div>

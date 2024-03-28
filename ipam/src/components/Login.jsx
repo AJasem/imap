@@ -36,6 +36,7 @@ function Login() {
   };
 
   return (
+    <div className="form">
     <Form onFinish={handleSubmit}>
       <h3>Sign In</h3>
       <Form.Item
@@ -56,6 +57,7 @@ function Login() {
         </Button>
       </Form.Item>
     </Form>
+    </div>
   );
 }
 

@@ -17,6 +17,7 @@ const SendButton = () => {
     try {
       setLoading(true);
       const formValues = await form.validateFields();
+      setOpen(false);
 
       if (!token) {
         message.error("Missing Token");
@@ -37,7 +38,7 @@ const SendButton = () => {
       };
 
       const response = await axios.post(
-        "https://api.ahmads.dev/send-email",
+        "http://localhost:3005/send-email",
         data,
         {
           headers: {

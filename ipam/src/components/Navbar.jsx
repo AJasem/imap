@@ -1,24 +1,17 @@
+// Navbar.js
 import React from "react";
-import { Menu, Dropdown } from "antd";
-import {
-  VerticalAlignTopOutlined,
-  ExclamationCircleOutlined,
-  InboxOutlined,
-} from "@ant-design/icons";
+import { Menu } from "antd";
+import { VerticalAlignTopOutlined, ExclamationCircleOutlined, InboxOutlined } from "@ant-design/icons";
 
-const Navbar = () => {
+const Navbar = ({ handleSwitch }) => { // Corrected prop name
+  const menuItems = [
+    { key: "1", icon: <InboxOutlined />, onClick: () => handleSwitch({ key: "fetch-emails" }), title: "fetch-emails" },
+    { key: "2", icon: <VerticalAlignTopOutlined />, onClick: () => handleSwitch({ key: "sent" }), title: "sent" },
+    { key: "3", icon: <ExclamationCircleOutlined />, onClick: () => handleSwitch({ key: "spam" }), title: "spam" }
+  ];
+
   return (
-    <Menu>
-      <Menu.Item key="1" icon={<InboxOutlined />} onClick={onclick}>
-        Inbox
-      </Menu.Item>
-      <Menu.Item key="2" icon={<VerticalAlignTopOutlined />} onClick={onclick}>
-        Sent
-      </Menu.Item>
-      <Menu.Item key="3" icon={<ExclamationCircleOutlined />} onClick={onclick}>
-        Spam
-      </Menu.Item>
-    </Menu>
+    <Menu items={menuItems} />
   );
 };
 

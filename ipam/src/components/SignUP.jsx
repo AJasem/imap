@@ -38,6 +38,7 @@ function SignUp() {
   };
 
   return (
+    <div className="form">
     <Form name="sign_up" initialValues={{ remember: true }} onFinish={onFinish}>
       <h3>Sign Up</h3>
       <Form.Item
@@ -66,6 +67,7 @@ function SignUp() {
         </Button>
       </Form.Item>
     </Form>
+    </div>
   );
 }
 

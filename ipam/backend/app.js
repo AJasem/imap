@@ -74,7 +74,23 @@ app.post("/sign-up", async (req, res) => {
   }
 });
 
+// Fetch emails from INBOX
 app.get("/fetch-emails", async (req, res) => {
+  fetchEmailsFromMailbox("INBOX", req, res);
+});
+
+// Fetch emails from Sent mailbox
+app.get("/sent", async (req, res) => {
+  fetchEmailsFromMailbox("Sent", req, res);
+});
+
+// Fetch emails from Spam mailbox
+app.get("/spam", async (req, res) => {
+  fetchEmailsFromMailbox("Spam", req, res);
+});
+
+async function fetchEmailsFromMailbox(mailboxName, req, res) {
+  const fullMailboxName = `INBOX.${mailboxName}`;
   try {
     const token = req.headers.authorization;
     let decoded;
@@ -95,78 +111,74 @@ app.get("/fetch-emails", async (req, res) => {
     });
 
     imap.once("ready", function () {
-      openInbox(imap, function (err, box) {
+      openMailbox(imap, fullMailboxName, function (err) {
         if (err) {
           res.status(500).json({ error: err.message });
           return;
         }
 
-        let messageCount = box.messages.total;
+        imap.search(["ALL"], function (err, results) {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
 
-        let f;
-        if (messageCount > 0) {
-          let fetchRange = messageCount > 1 ? "1:*" : "1:1";
-          f = imap.seq.fetch(fetchRange, {
+          const f = imap.fetch(results, {
             bodies: "",
             struct: true,
           });
-        } else {
-          console.log("No messages to fetch");
-          res.status(200).json({ message: "No messages to fetch" });
-          return;
-        }
 
-        const htmlBodies = [];
-        f.on("message", function (msg, seqno) {
-          const promise = new Promise((resolve, reject) => {
-            let emailData = {};
-            let uid;
-            let seen;
-            msg.once("attributes", function (attrs) {
-              uid = attrs.uid;
-              seen = attrs.flags.includes("\\Seen");
-            });
-            msg.once("body", function (stream, info) {
-              simpleParser(stream)
-                .then((parsed) => {
-                  emailData = {
-                    uid: uid,
-                    seen: seen,
-                    from:
-                      parsed.from.value[0].name || parsed.from.value[0].address,
-                    subject: parsed.subject,
-                    date:
-                      parsed.date.getHours() +
-                      ":" +
-                      parsed.date.getMinutes() +
-                      " " +
-                      parsed.date.toDateString(),
-                    html: parsed.html || parsed.textAsHtml,
-                  };
-                  resolve(emailData);
-                })
-                .catch(reject);
-            });
-
-            msg.once("end", function () {});
-          });
-
-          htmlBodies.unshift(promise);
-        });
-
-        f.once("end", function () {
-          imap.end();
-          Promise.all(htmlBodies)
-            .then((bodies) => {
-              res.send(bodies);
-            })
-            .catch((error) => {
-              console.error("Error parsing emails:", error);
-              res.status(500).json({
-                error: "An error occurred while parsing emails",
-                message: error.message,
+          const htmlBodies = [];
+          f.on("message", function (msg, seqno) {
+            const promise = new Promise((resolve, reject) => {
+              let emailData = {};
+              let uid;
+              let seen;
+              msg.once("attributes", function (attrs) {
+                uid = attrs.uid;
+                seen = attrs.flags.includes("\\Seen");
+              });
+              msg.once("body", function (stream, info) {
+                simpleParser(stream)
+                  .then((parsed) => {
+                    emailData = {
+                      uid: uid,
+                      seen: seen,
+                      from:
+                        parsed.from.value[0].name ||
+                        parsed.from.value[0].address,
+                      subject: parsed.subject,
+                      date:
+                        parsed.date.getHours() +
+                        ":" +
+                        parsed.date.getMinutes() +
+                        " " +
+                        parsed.date.toDateString(),
+                      html: parsed.html || parsed.textAsHtml,
+                    };
+                    resolve(emailData);
+                  })
+                  .catch(reject);
               });
             });
+
+            htmlBodies.unshift(promise);
+          });
+
+          f.once("end", function () {
+            imap.end();
+            Promise.all(htmlBodies)
+              .then((bodies) => {
+                res.send(bodies);
+              })
+              .catch((error) => {
+                console.error("Error parsing emails:", error);
+                res.status(500).json({
+                  error: "An error occurred while parsing emails",
+                  message: error.message,
+                });
+              });
+          });
         });
       });
     });
@@ -186,16 +198,18 @@ app.get("/fetch-emails", async (req, res) => {
       message: error.message,
     });
   }
-});
+}
 
-function openInbox(imap, cb) {
-  imap.openBox("INBOX", true, cb);
+function openMailbox(imap, fullMailboxName, cb) {
+  imap.openBox(fullMailboxName, true, cb);
 }
 
 app.post("/send-email", async (req, res) => {
   try {
     const { to, subject, text, attachments } = req.body;
     const token = req.headers.authorization;
+
+    // Verify JWT token
     let decoded;
     try {
       decoded = jwt.verify(token, secretKey);
@@ -205,6 +219,7 @@ app.post("/send-email", async (req, res) => {
 
     const { email, password } = decoded;
 
+    // Create SMTP transporter for sending emails
     const transporter = nodemailer.createTransport({
       host: "premium257.web-hosting.com",
       port: 465,
@@ -215,6 +230,7 @@ app.post("/send-email", async (req, res) => {
       },
     });
 
+    // Send email
     const mailOptions = {
       from: email,
       to: to,
@@ -228,10 +244,60 @@ app.post("/send-email", async (req, res) => {
 
     const info = await transporter.sendMail(mailOptions);
 
-    console.log("Message sent: %s", info.messageId);
-    res
-      .status(200)
-      .json({ message: "Email sent successfully", messageId: info.messageId });
+    const imapConfig = {
+      user: email,
+      password: password,
+      host: "premium257.web-hosting.com",
+      port: 993,
+      tls: true,
+      tlsOptions: { rejectUnauthorized: false },
+    };
+
+    const imap = new Imap(imapConfig);
+
+    imap.once("ready", function () {
+      imap.openBox("INBOX.Sent", true, function (err, box) {
+        if (err) {
+          console.error("Error opening Sent folder:", err);
+          return res.status(500).json({ error: err.message });
+        }
+        const formattedDate = new Date().toUTCString(); // Format the current date
+
+        // Prepare the attachment headers
+        const attachmentHeaders = attachments.map((attachment) => {
+          return `Content-Disposition: attachment; filename="${attachment.filename}"\r\nContent-Type: ${attachment.contentType}\r\n\r\n`;
+        });
+
+        // Concatenate all parts: headers, email text, and attachments
+        const emailContent = `From: ${mailOptions.from}\r\nTo: ${
+          mailOptions.to
+        }\r\nSubject: ${mailOptions.subject}\r\nDate: ${formattedDate}\r\n\r\n${
+          mailOptions.text || ""
+        }\r\n\r\n${attachmentHeaders.join("\r\n")}`;
+
+        // Append sent email to "Sent" folder
+        imap.append(emailContent, { mailbox: "INBOX.Sent" }, function (err) {
+          if (err) {
+            console.error("Error appending email to Sent folder:", err);
+            res.status(500).json({ error: err.message });
+          } else {
+            console.log("Email appended to Sent folder successfully");
+            res.status(200).json({
+              message: "Email sent successfully",
+              messageId: info.messageId,
+            });
+          }
+          imap.end();
+        });
+      });
+    });
+
+    imap.once("error", function (err) {
+      console.error("IMAP error:", err);
+      res.status(500).json({ error: err.message });
+    });
+
+    imap.connect();
   } catch (error) {
     console.error("Error sending email:", error);
     res.status(500).json({
@@ -274,24 +340,25 @@ app.post("/mark-as-seen", async (req, res) => {
     const { email, password } = decoded;
     const { uid } = req.body;
 
-    const imap = new Imap({
+    const imapConfig = {
       user: email,
       password: password,
       host: "premium257.web-hosting.com",
       port: 993,
       tls: true,
-    });
+      tlsOptions: { rejectUnauthorized: false },
+    };
 
-    imap.once("ready", function () {
-      openInbox(imap, function (err, box) {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        imap.addFlags(uid, ["\\Seen"], function (err) {
+    const imap = new Imap(imapConfig);
+
+    imap.once("ready", () => {
+      imap.openBox("INBOX", false, () => {
+        imap.addFlags(uid, ["\\Seen"], (err) => {
           if (err) {
+            console.error("Error marking email as seen:", err);
             res.status(500).json({ error: err.message });
           } else {
+            console.log("Email marked as seen successfully");
             res.status(200).json({ message: "Email marked as seen" });
           }
           imap.end();
@@ -299,9 +366,13 @@ app.post("/mark-as-seen", async (req, res) => {
       });
     });
 
-    imap.once("error", function (err) {
-      console.log("IMAP error:", err);
+    imap.once("error", (err) => {
+      console.error("IMAP error:", err);
       res.status(500).json({ error: err.message });
+    });
+
+    imap.once("end", () => {
+      console.log("Connection ended");
     });
 
     imap.connect();
