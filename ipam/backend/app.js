@@ -145,9 +145,10 @@ async function fetchEmailsFromMailbox(mailboxName, req, res) {
                     emailData = {
                       uid: uid,
                       seen: seen,
-                      from:
-                        parsed.from.value[0].name ||
-                        parsed.from.value[0].address,
+                      from: {
+                        name: parsed.from.value[0].name,
+                        address: parsed.from.value[0].address,
+                      },
                       subject: parsed.subject,
                       date:
                         parsed.date.getHours() +

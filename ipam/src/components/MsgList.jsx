@@ -28,7 +28,7 @@ function MsgList({ messages, handleDeleteMessage, handleListClick }) {
           >
             <List.Item.Meta
               avatar={<Button icon={<MailOutlined />} />}
-              description={`From: ${message.from}`}
+              description={`From: ${message.from.name? message.from.name : message.from.address}`}
             />
             <div>{message.date}</div>
           </List.Item>

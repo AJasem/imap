@@ -144,6 +144,14 @@ body, html, .App, #root, .auth-wrapper {
   transition: all .3s;
 
 }
+.msg-info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0
+}
 .ant-spin-container{
   height: 600px;
   overflow-y: scroll;
