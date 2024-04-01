@@ -85,11 +85,8 @@ const fetchMessages = async (ENDPOINT) => {
   const handleDeleteMessage = async (uid) => {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
-      const response = await axios.post(
-        "http://localhost:3005/delete-message",
-        {
-          uid,
-        },
+      const response = await axios.delete(
+        `http://localhost:3005/delete-message/${ENDPOINT}/${uid}`, // Include uid in the URL
         {
           headers: {
             Authorization: token,
@@ -105,6 +102,7 @@ const fetchMessages = async (ENDPOINT) => {
       console.error("Error deleting message:", error);
     }
   };
+  
 
   const handleNextMessage = () => {
     if (selectedIndex < messages.length - 1) {
