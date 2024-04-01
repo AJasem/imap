@@ -11,7 +11,7 @@ function Login() {
     setLoading(true);
     const { email, password } = values;
     try {
-      const response = await axios.post("https://api.ahmads.dev/login", {
+      const response = await axios.post("http://localhost:3005/login", {
         email: email,
         password: password,
       });

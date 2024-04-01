@@ -7,7 +7,7 @@ const Imap = require("node-imap");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const { checkUserExists, updateDatabase } = require("./database");
+// const { checkUserExists, updateDatabase } = require("./database");
 
 dotenv.config();
 
@@ -324,9 +324,42 @@ app.post("/login", async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({ error: "An error occurred while checking user existence" });
   }
 });
+
+const checkUserExists = async (email, password) => {
+  const imapConfig = {
+    user: email,
+    password: password,
+    host: "premium257.web-hosting.com",
+    port: 993,
+    tls: true,
+    tlsOptions: { rejectUnauthorized: false },
+  };
+
+  const imap = new Imap(imapConfig);
+
+  return new Promise((resolve, reject) => {
+    imap.once("ready", () => {
+      imap.end();
+      resolve(true); // User exists if connection is successful
+    });
+
+    imap.once("error", (err) => {
+      imap.end();
+      if (err.message.includes("Authentication failed")) {
+        resolve(false); // User does not exist or credentials are invalid
+      } else {
+        reject(err); // Other errors
+      }
+    });
+
+    imap.connect();
+  });
+};
 
 app.post("/mark-as-seen", async (req, res) => {
   try {
