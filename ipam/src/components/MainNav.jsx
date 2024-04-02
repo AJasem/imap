@@ -11,9 +11,9 @@ const MainNav = () => {
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
 
-  // Function to handle navbar link click
+  
   const handleNavLinkClick = () => {
-    setExpanded(false); // Close the navbar when a link is clicked
+    setExpanded(false); 
   };
 
   return (

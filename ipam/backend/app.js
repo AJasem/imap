@@ -7,7 +7,6 @@ const Imap = require("node-imap");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-// const { checkUserExists, updateDatabase } = require("./database");
 
 dotenv.config();
 
@@ -74,12 +73,10 @@ app.post("/sign-up", async (req, res) => {
   }
 });
 
-// Fetch emails from INBOX
 app.get("/fetch-emails", async (req, res) => {
   fetchEmailsFromMailbox("INBOX", req, res);
 });
 
-// Fetch emails from Sent mailbox
 app.get("/sent", async (req, res) => {
   fetchEmailsFromMailbox("Sent", req, res);
 });
@@ -211,7 +208,6 @@ app.post("/send-email", async (req, res) => {
     const { to, subject, text, attachments } = req.body;
     const token = req.headers.authorization;
 
-    // Verify JWT token
     let decoded;
     try {
       decoded = jwt.verify(token, secretKey);
@@ -221,7 +217,6 @@ app.post("/send-email", async (req, res) => {
 
     const { email, password } = decoded;
 
-    // Create SMTP transporter for sending emails
     const transporter = nodemailer.createTransport({
       host: "premium257.web-hosting.com",
       port: 465,
@@ -232,7 +227,6 @@ app.post("/send-email", async (req, res) => {
       },
     });
 
-    // Send email
     const mailOptions = {
       from: email,
       to: to,
@@ -263,21 +257,18 @@ app.post("/send-email", async (req, res) => {
           console.error("Error opening Sent folder:", err);
           return res.status(500).json({ error: err.message });
         }
-        const formattedDate = new Date().toUTCString(); // Format the current date
+        const formattedDate = new Date().toUTCString();
 
-        // Prepare the attachment headers
         const attachmentHeaders = attachments.map((attachment) => {
           return `Content-Disposition: attachment; filename="${attachment.filename}"\r\nContent-Type: ${attachment.contentType}\r\n\r\n`;
         });
 
-        // Concatenate all parts: headers, email text, and attachments
         const emailContent = `From: ${mailOptions.from}\r\nTo: ${
           mailOptions.to
         }\r\nSubject: ${mailOptions.subject}\r\nDate: ${formattedDate}\r\n\r\n${
           mailOptions.text || ""
         }\r\n\r\n${attachmentHeaders.join("\r\n")}`;
 
-        // Append sent email to "Sent" folder
         imap.append(emailContent, { mailbox: "INBOX.Sent" }, function (err) {
           if (err) {
             console.error("Error appending email to Sent folder:", err);
@@ -346,15 +337,15 @@ const checkUserExists = async (email, password) => {
   return new Promise((resolve, reject) => {
     imap.once("ready", () => {
       imap.end();
-      resolve(true); // User exists if connection is successful
+      resolve(true);
     });
 
     imap.once("error", (err) => {
       imap.end();
       if (err.message.includes("Authentication failed")) {
-        resolve(false); // User does not exist or credentials are invalid
+        resolve(false);
       } else {
-        reject(err); // Other errors
+        reject(err);
       }
     });
 

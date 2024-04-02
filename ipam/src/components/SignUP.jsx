@@ -24,14 +24,13 @@ function SignUp() {
       }
     } catch (error) {
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
+       
         const errorMessage = Array.isArray(error.response.data.error)
           ? error.response.data.error.join(" ")
           : error.response.data.error;
         message.error(`${errorMessage}`);
       } else {
-        // Something happened in setting up the request that triggered an Error
+       
         message.error(`${error.message}`);
       }
     }
@@ -46,7 +45,7 @@ function SignUp() {
         rules={[
           {
             required: true,
-            message: "Please input your email!",
+            message: "@ahmads.dev",
             type: "email",
           },
         ]}

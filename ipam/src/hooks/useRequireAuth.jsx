@@ -1,4 +1,3 @@
-// src/hooks/useRequireAuth.js
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +11,7 @@ function useRequireAuth() {
     if (token) {
       setIsAuthenticated(true);
     } else {
-      navigate("/sign-in"); // Redirect to login page if not authenticated
+      navigate("/sign-in"); 
     }
   }, [navigate]);
 

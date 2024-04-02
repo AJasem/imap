@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, Upload, message } from "antd";
 import { SendOutlined, UploadOutlined } from "@ant-design/icons";
-import axios from "axios"; // Import Axios
+import axios from "axios"; 
 
 const SendButton = () => {
   const [open, setOpen] = useState(false);
@@ -32,7 +32,8 @@ const SendButton = () => {
         attachments: fileList.map((attachment) => {
           return {
             filename: attachment.name,
-            content: attachment.originFileObj, // This needs to be a base64 string
+            content: attachment.originFileObj,
+             
           };
         }),
       };
@@ -125,18 +126,21 @@ const SendButton = () => {
                 const reader = new FileReader();
 
                 reader.onloadend = () => {
-                  const base64data = reader.result.split(",")[1]; // Split the Data URL and get the base64 data
+                  const base64data = reader.result.split(",")[1]; 
+                  
                   file.originFileObj = base64data;
-                  setFileList([...fileList, file]); // Add the file to the file list
+                  setFileList([...fileList, file]); 
+                
                 };
 
                 reader.readAsDataURL(file);
 
-                // Prevent upload
+         
                 return false;
               }}
               onRemove={(file) => {
-                setFileList(fileList.filter((item) => item !== file)); // Remove the file from the file list
+                setFileList(fileList.filter((item) => item !== file));
+               
               }}
             >
               <Button icon={<UploadOutlined />}>Click to Upload</Button>

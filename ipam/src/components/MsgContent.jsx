@@ -3,7 +3,7 @@ import { Button, Dropdown, Menu } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 function MsgContent({ selectedMessage, handleNextMessage, handlePrevMessage, handleBackToList, messages, selectedIndex }) {
-  // Define a menu for the dropdown
+ 
   const menu = (
     <Menu>
       <Menu.Item>

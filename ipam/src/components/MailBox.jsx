@@ -86,7 +86,7 @@ const fetchMessages = async (ENDPOINT) => {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
       const response = await axios.delete(
-        `http://localhost:3005/delete-message/${ENDPOINT}/${uid}`, // Include uid in the URL
+        `http://localhost:3005/delete-message/${ENDPOINT}/${uid}`, 
         {
           headers: {
             Authorization: token,
