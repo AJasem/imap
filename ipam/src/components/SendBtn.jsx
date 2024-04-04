@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, Modal, Form, Input, Upload, message } from "antd";
 import { SendOutlined, UploadOutlined } from "@ant-design/icons";
 import axios from "axios"; 
-
 const SendButton = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -12,7 +11,6 @@ const SendButton = () => {
   const handleClick = () => {
     setOpen(true);
   };
-
   const handleOk = async () => {
     try {
       setLoading(true);
@@ -24,7 +22,6 @@ const SendButton = () => {
         setLoading(false);
         return;
       }
-
       const data = {
         to: formValues.to,
         subject: formValues.subject,
@@ -47,7 +44,6 @@ const SendButton = () => {
           },
         }
       );
-
       message.success(response.data.message);
       setLoading(false);
       setOpen(false);
@@ -132,15 +128,11 @@ const SendButton = () => {
                   setFileList([...fileList, file]); 
                 
                 };
-
                 reader.readAsDataURL(file);
-
-         
                 return false;
               }}
               onRemove={(file) => {
                 setFileList(fileList.filter((item) => item !== file));
-               
               }}
             >
               <Button icon={<UploadOutlined />}>Click to Upload</Button>

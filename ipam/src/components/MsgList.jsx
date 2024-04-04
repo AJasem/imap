@@ -2,8 +2,6 @@ import React from "react";
 import { List, Button } from "antd";
 import { DeleteOutlined, CalendarOutlined, MailOutlined } from "@ant-design/icons";
 
-
-
 function MsgList({ messages, handleDeleteMessage, handleListClick }) {
     return (
         <List
@@ -28,7 +26,8 @@ function MsgList({ messages, handleDeleteMessage, handleListClick }) {
           >
             <List.Item.Meta
               avatar={<Button icon={<MailOutlined />} />}
-              description={`From: ${message.from.name? message.from.name : message.from.address}`}
+              description={`From: ${message.from.name?
+                message.from.name : message.from.address}`}
             />
             <div>{message.date}</div>
           </List.Item>
@@ -36,6 +35,4 @@ function MsgList({ messages, handleDeleteMessage, handleListClick }) {
       />
     );
     }
-
-
     export default MsgList;

@@ -2,14 +2,12 @@ import React from "react";
 import { Button, Dropdown, Menu } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
-function MsgContent({ selectedMessage, handleNextMessage, handlePrevMessage, handleBackToList, messages, selectedIndex }) {
- 
+function MsgContent({ selectedMessage, handleNextMessage,
+   handlePrevMessage, handleBackToList, messages, selectedIndex }) {
   const menu = (
     <Menu>
       <Menu.Item>
         {selectedMessage.from.address}
-         
-        
       </Menu.Item>
     </Menu>
   );
@@ -31,7 +29,6 @@ function MsgContent({ selectedMessage, handleNextMessage, handlePrevMessage, han
           disabled={selectedIndex === messages.length - 1}
         />
       </div>
-
       <div className="msg-info">
         <div>
           <Dropdown overlay={menu}>
@@ -39,7 +36,8 @@ function MsgContent({ selectedMessage, handleNextMessage, handlePrevMessage, han
           </Dropdown>
         </div>
         <div>
-          <strong>From:</strong> {selectedMessage.from.name ? selectedMessage.from.name : selectedMessage.from.address}
+          <strong>From:</strong> {selectedMessage.from.name ? 
+          selectedMessage.from.name : selectedMessage.from.address}
         </div>
         <div>
           <strong>Subject:</strong> {selectedMessage.subject}

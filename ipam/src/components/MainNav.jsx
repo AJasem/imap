@@ -2,20 +2,16 @@ import React, { useState } from 'react';
 import {
   Navbar,
   Container,
-  Nav,
-  NavDropdown,
+  Nav
 } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 
 const MainNav = () => {
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
-
-  
   const handleNavLinkClick = () => {
     setExpanded(false); 
   };
-
   return (
     <>
       <Navbar bg="light" expand="lg" className='main-nav'>
