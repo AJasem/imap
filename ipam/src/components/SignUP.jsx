@@ -1,41 +1,12 @@
-// SignUp.js
-import { Form, Input, Button, message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Form, Input, Button } from "antd";
 import React from "react";
-import axios from "axios";
+import useSignUp from "../hooks/useSignUp";
 
 function SignUp() {
-  const navigate = useNavigate();
-
-  const onFinish = async (values) => {
-    try {
-      const response = await axios.post(
-        "https://api.ahmads.dev/sign-up",
-        values
-      );
-      const data = response.data;
-
-      if (response.status === 200) {
-        localStorage.clear();
-        localStorage.setItem("token", JSON.stringify(data.token));
-        navigate("/mailbox");
-      } else {
-        message.error(`${response.message.error}`);
-      }
-    } catch (error) {
-      if (error.response) {
-       
-        const errorMessage = Array.isArray(error.response.data.error)
-          ? error.response.data.error.join(" ")
-          : error.response.data.error;
-        message.error(`${errorMessage}`);
-      } else {
-       
-        message.error(`${error.message}`);
-      }
-    }
+  const signUp = useSignUp();
+  const onFinish = (values) => {
+    signUp(values);
   };
-
   return (
     <div className="form">
     <Form name="sign_up" initialValues={{ remember: true }} onFinish={onFinish}>
