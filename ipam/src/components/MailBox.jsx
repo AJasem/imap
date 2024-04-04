@@ -30,7 +30,6 @@ const fetchMessages = async (ENDPOINT) => {
       if (response.status === 200) {
         if (Array.isArray(response.data)) {
          setMessages(response.data);
-         console.log(response.data);
         }
       }
     } catch (error) {
