@@ -1,62 +1,21 @@
 import React, { useState } from "react";
-import { Button, Modal, Form, Input, Upload, message } from "antd";
+import { Button, Modal, Form, Input, Upload } from "antd";
 import { SendOutlined, UploadOutlined } from "@ant-design/icons";
-import axios from "axios"; 
+import useSendEmail from "../hooks/useSend";
+
 const SendButton = () => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [token, setUser] = useState(JSON.parse(localStorage.getItem("token")));
   const [fileList, setFileList] = useState([]);
+  const { loading, sendEmail } = useSendEmail();
 
   const handleClick = () => {
     setOpen(true);
   };
+
   const handleOk = async () => {
-    try {
-      setLoading(true);
-      const formValues = await form.validateFields();
-      setOpen(false);
-
-      if (!token) {
-        message.error("Missing Token");
-        setLoading(false);
-        return;
-      }
-      const data = {
-        to: formValues.to,
-        subject: formValues.subject,
-        text: formValues.message,
-        attachments: fileList.map((attachment) => {
-          return {
-            filename: attachment.name,
-            content: attachment.originFileObj,
-             
-          };
-        }),
-      };
-
-      const response = await axios.post(
-        "http://localhost:3005/send-email",
-        data,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      message.success(response.data.message);
-      setLoading(false);
-      setOpen(false);
-    } catch (error) {
-      if (error.response) {
-        message.error(error.response.data.error);
-      } else if (error.request) {
-        message.error("No response received from server");
-      } else {
-        message.error(error.message);
-      }
-      setLoading(false);
-    }
+    const formValues = await form.validateFields();
+    setOpen(false);
+    sendEmail(formValues, fileList);
   };
 
   const handleCancel = () => {
@@ -84,7 +43,7 @@ const SendButton = () => {
       />
       <Modal
         title="Send Email"
-        open={open}
+        visible={open}
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Send"
@@ -95,9 +54,7 @@ const SendButton = () => {
           <Form.Item
             label="To"
             name="to"
-            rules={[
-              { required: true, message: "Please input recipient's email" },
-            ]}
+            rules={[{ required: true, message: "Please input recipient's email" }]}
           >
             <Input />
           </Form.Item>
@@ -122,11 +79,9 @@ const SendButton = () => {
                 const reader = new FileReader();
 
                 reader.onloadend = () => {
-                  const base64data = reader.result.split(",")[1]; 
-                  
+                  const base64data = reader.result.split(",")[1];
                   file.originFileObj = base64data;
-                  setFileList([...fileList, file]); 
-                
+                  setFileList([...fileList, file]);
                 };
                 reader.readAsDataURL(file);
                 return false;
