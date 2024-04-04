@@ -18,7 +18,6 @@ const fetchMessages = async (ENDPOINT) => {
       if (!auth) {
         return;
       }
-     
       const token = JSON.parse(localStorage.getItem("token"));
       const response = await axios.get(
         `http://localhost:3005/${ENDPOINT}`,
@@ -28,7 +27,6 @@ const fetchMessages = async (ENDPOINT) => {
           },
         }
       );
-
       if (response.status === 200) {
         if (Array.isArray(response.data)) {
          setMessages(response.data);

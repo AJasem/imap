@@ -8,12 +8,11 @@ function MailBoxNav({handleSwitch}) {
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/sign-in");
-
   };
   return (
     <div className="mailbox-nav">
     <div className="left-icons">
-        <Popover content={<Navbar handleSwitch={handleSwitch}/>} trigger={"click"}>
+        <Popover content={<Navbar handleSwitch={handleSwitch}/>}>
           <Button>Menu</Button>
         </Popover>
       </div>
