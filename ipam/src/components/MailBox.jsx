@@ -50,6 +50,9 @@ const fetchMessages = async (ENDPOINT) => {
   const handleListClick = async (message, index) => {
     setSelectedMessage(message);
     setSelectedIndex(index);
+    if (message.seen) {
+      return;
+    }
     const token = JSON.parse(localStorage.getItem("token"));
     try {
       const response = await axios.post(
