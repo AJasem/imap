@@ -28,19 +28,21 @@ const SendButton = () => {
     <>
       <Button
         type="primary"
-        shape="circle"
-        icon={<SendOutlined style={{ fontSize: "35px" }} />}
+        shape='default'
+         icon={<SendOutlined />}
         style={{
           zIndex: 1,
-          position: "fixed",
-          bottom: "50px",
-          right: "100px",
-          transform: "rotate(300deg)",
-          width: "70px",
-          height: "70px",
+          padding: "20px",
+          margin: "0 0 0 10px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#1f1f1f",
         }}
         onClick={handleClick}
-      />
+      >
+        Compose
+      </Button>
       <Modal
         title="Send Email"
         open={open}

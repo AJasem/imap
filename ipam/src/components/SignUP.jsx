@@ -48,11 +48,11 @@ function SignUp() {
 
 
          <Form.Item>
-         Already have an account?  <Link to="/sign-in">Sign In</Link>
+         Already have an account?  <Link to="/sign-in" className="custom-link">Sign In</Link>
          </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" className="s-btn">
             Sign Up
           </Button>
         </Form.Item>

@@ -27,10 +27,10 @@ function Login() {
           <Input.Password placeholder="Enter password" />
         </Form.Item>
         <Form.Item>
-          Don't have an account? <Link to="/sign-up">Sign up</Link>
+          Don't have an account? <Link to="/sign-up" className="custom-link">Sign up</Link>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button type="primary" htmlType="submit" loading={loading} className="s-btn" >
             Sign In
           </Button>
         </Form.Item>

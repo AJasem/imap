@@ -5,6 +5,7 @@ import { LogoutOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useState , useEffect } from "react";
 import { Typography } from "antd";
+import SendButton from "./SendBtn";
 
 function MailBoxNav({handleSwitch}) {
     const navigate = useNavigate();
@@ -43,13 +44,15 @@ function MailBoxNav({handleSwitch}) {
 
   return (
     <div className="mailbox-nav">
+      <div className="top-buttons">
     <div className="left-icons">
+    
         <Popover content={<Navbar handleSwitch={handleSwitch}/>}>
-          <Button>Menu</Button>
+          <Button className="menu" >Menu</Button>
         </Popover>
+        <SendButton />
       </div>
-      <Typography.Text className="delete-text">{remainingTimeText}</Typography.Text>
-
+      
       <Button
         icon={<LogoutOutlined style={{ color: "red" }} />}
         onClick={handleLogout}
@@ -57,6 +60,8 @@ function MailBoxNav({handleSwitch}) {
       >
         Logout
       </Button>
+      </div>
+      <Typography.Text className="delete-text">{remainingTimeText}</Typography.Text>
       </div>
   );
 }
