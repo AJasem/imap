@@ -31,7 +31,7 @@ function MsgContent({ selectedMessage, handleNextMessage,
       </div>
       <div className="msg-info">
         <div>
-          <Dropdown overlay={menu}>
+          <Dropdown menu={menu}>
             <Button>From</Button>
           </Dropdown>
         </div>

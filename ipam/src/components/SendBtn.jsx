@@ -43,7 +43,7 @@ const SendButton = () => {
       />
       <Modal
         title="Send Email"
-        visible={open}
+        open={open}
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Send"

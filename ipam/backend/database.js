@@ -1,20 +1,20 @@
 const mongodb = require("mongodb");
 
-const updateDatabase = async (email, password) => {
+const updateDatabase = async (email, timeStamp) => {
   const client = new mongodb.MongoClient(process.env.MongoURL);
   try {
     await client.connect();
     const db = client.db("dmail");
     const users = db.collection("users");
 
-    await users.insertOne({ email, password });
+    await users.insertOne({ email, timeStamp });
   } catch (error) {
     throw new Error("Error updating database: " + error);
   } finally {
     await client.close();
   }
 };
-const checkUserExists = async (email, password) => {
+const checkTimeExists = async (email) => {
   const client = new mongodb.MongoClient(process.env.MongoURL);
   try {
     await client.connect();
@@ -25,18 +25,26 @@ const checkUserExists = async (email, password) => {
     if (!user) {
       throw new Error("User not found");
     }
-
-    // Compare plain text passwords
-    if (user.password == password) {
-      return user; // Passwords match, return user object
-    } else {
-      throw new Error("Passwords do not match");
-    }
+    return user.timeStamp;
   } catch (error) {
     throw new Error(error);
   } finally {
     await client.close();
   }
 };
+const deleteEmail = async (email) => {
+  const client = new mongodb.MongoClient(process.env.MongoURL);
+  try {
+    await client.connect();
+    const db = client.db("dmail");
+    const users = db.collection("users");
 
-module.exports = { checkUserExists, updateDatabase };
+    await users.deleteOne({ email });
+  } catch (error) {
+    throw new Error("Error deleting email: " + error);
+  } finally {
+    await client.close();
+  }
+};
+
+module.exports = { checkTimeExists, updateDatabase, deleteEmail };

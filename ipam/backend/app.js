@@ -7,7 +7,8 @@ const Imap = require("node-imap");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-
+const Queue = require("bull");
+const { updateDatabase, checkTimeExists, deleteEmail } = require("./database");
 dotenv.config();
 
 const app = express();
@@ -33,6 +34,31 @@ function authenticateToken(req, res, next) {
 
 app.use(authenticateToken);
 
+const deleteAccountAfterTime = (deleteTime, email) => {
+  setTimeout(async () => {
+    try {
+      const response = await axios.post(
+        `https://premium257.web-hosting.com:2083/execute/Email/delete_pop`,
+        { email: email, domain: "ahmads.dev" },
+        {
+          headers: {
+            Authorization: process.env.authToken,
+          },
+        }
+      );
+
+      if (response.data.errors) {
+        console.error("Error deleting email address:", response.data.errors);
+      } else {
+        await deleteEmail(email);
+        console.log("Email address deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting email address:", error);
+    }
+  }, Number(deleteTime) * 24 * 60 * 60 * 1000);
+};
+
 app.post("/sign-up", async (req, res) => {
   try {
     const data = {
@@ -40,7 +66,7 @@ app.post("/sign-up", async (req, res) => {
       password: req.body.password,
       domain: "ahmads.dev",
     };
-
+    const deleteTime = req.body.deletionTime;
     const response = await axios.post(
       `https://premium257.web-hosting.com:2083/execute/Email/add_pop`,
       data,
@@ -54,16 +80,16 @@ app.post("/sign-up", async (req, res) => {
     if (response.data.errors) {
       return res.status(400).json({ error: response.data.errors });
     }
-
-    updateDatabase(req.body.email, req.body.password);
-
     const token = jwt.sign(
       { email: req.body.email, password: req.body.password },
       secretKey,
       { expiresIn: "1h" }
     );
-
-    res.json({ token });
+    deleteAccountAfterTime(deleteTime, req.body.email);
+    const deleteTimeStamp =
+      new Date().getTime() + Number(deleteTime) * 24 * 60 * 60 * 1000;
+    updateDatabase(req.body.email, deleteTimeStamp);
+    res.json({ token, deleteTimeStamp });
   } catch (error) {
     console.error("Error creating email address:", error);
     res.status(500).json({
@@ -307,10 +333,10 @@ app.post("/login", async (req, res) => {
     const userExists = await checkUserExists(email, password);
 
     if (userExists) {
-      const token = jwt.sign({ email: email, password: password }, secretKey, {
-        expiresIn: "1h",
-      });
-      res.json({ token });
+      const token = jwt.sign({ email: email, password: password }, secretKey);
+      const deleteTimeStamp = await checkTimeExists(email);
+
+      res.json({ token, deleteTimeStamp });
     } else {
       res.status(401).json({ error: "Invalid credentials" });
     }

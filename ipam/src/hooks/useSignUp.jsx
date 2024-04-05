@@ -8,7 +8,7 @@ const useSignUp = () => {
   return async (values) => {
     try {
       const response = await axios.post(
-        "https://api.ahmads.dev/sign-up",
+        "http://localhost:3005/sign-up",
         values
       );
       const data = response.data;
@@ -16,6 +16,7 @@ const useSignUp = () => {
       if (response.status === 200) {
         localStorage.clear();
         localStorage.setItem("token", JSON.stringify(data.token));
+        localStorage.setItem("deleteTimeStamp", JSON.stringify(data.deleteTimeStamp));
         navigate("/mailbox");
       } else {
         message.error(`${response.message.error}`);
