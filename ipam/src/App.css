@@ -102,7 +102,12 @@ body, html, .App, #root, .auth-wrapper {
   padding: 20px 20%;
 
 }
+.delete-text{
+  color: #f44336;
+  font-size: 20px;
+  font-weight: 500;
 
+}
 .btn-nav{
   
   color: white;

@@ -1,6 +1,7 @@
 import { Form, Input, Button, Select } from "antd";
 import React from "react";
 import useSignUp from "../hooks/useSignUp";
+import { Link } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -11,7 +12,7 @@ function SignUp() {
   };
   return (
     <div className="form">
-      <Form name="sign_up" initialValues={{ remember: true, deletionTime: "1" }} onFinish={onFinish}>
+      <Form name="sign_up" initialValues={{ remember: true }} onFinish={onFinish}>
         <h3>Sign Up</h3>
         <Form.Item
           name="email"
@@ -36,13 +37,19 @@ function SignUp() {
         <Form.Item
           name="deletionTime"
           rules={[{ required: true, message: "Please select deletion time!" }]}
-        >
+        >  
           <Select placeholder="Select deletion time">
             <Option value="1">1 day</Option>
             <Option value="3">3 days</Option>
             <Option value="7">1 week</Option>
           </Select>
+         
         </Form.Item>
+
+
+         <Form.Item>
+         Already have an account?  <Link to="/sign-in">Sign In</Link>
+         </Form.Item>
 
         <Form.Item>
           <Button type="primary" htmlType="submit">

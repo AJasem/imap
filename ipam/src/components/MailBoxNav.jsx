@@ -38,8 +38,7 @@ function MailBoxNav({handleSwitch}) {
     return () => clearInterval(timer);
   }, []);
   
-  const remainingTimeText = remainingTime ? `Your email will be deleted in ${remainingTime.days}
-   days and ${remainingTime.hours}:${remainingTime.minutes}:${remainingTime.seconds}` : "";
+  const remainingTimeText = remainingTime ? `Your email will be deleted in ${remainingTime.days}d:${remainingTime.hours}:${remainingTime.minutes}:${remainingTime.seconds}` : "";
 
 
   return (
@@ -49,7 +48,8 @@ function MailBoxNav({handleSwitch}) {
           <Button>Menu</Button>
         </Popover>
       </div>
-      <Typography.Text>{remainingTimeText}</Typography.Text>
+      <Typography.Text className="delete-text">{remainingTimeText}</Typography.Text>
+
       <Button
         icon={<LogoutOutlined style={{ color: "red" }} />}
         onClick={handleLogout}

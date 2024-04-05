@@ -1,5 +1,6 @@
 import { Form, Input, Button } from "antd";
 import useLogin from "../hooks/useLogin";
+import { Link } from "react-router-dom";
 
 function Login() {
   
@@ -24,6 +25,9 @@ function Login() {
           rules={[{ required: true, message: "@ahmads.dev" }]}
         >
           <Input.Password placeholder="Enter password" />
+        </Form.Item>
+        <Form.Item>
+          Don't have an account? <Link to="/sign-up">Sign up</Link>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={loading}>
