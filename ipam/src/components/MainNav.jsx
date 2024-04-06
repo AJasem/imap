@@ -20,8 +20,10 @@ const MainNav = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={() => setExpanded(!expanded)} />
           <Navbar.Collapse id="basic-navbar-nav" className={expanded ? 'show' : ''}>
             <Nav className="me-auto">
-              <Nav.Link as={Link} to="/sign-in" onClick={handleNavLinkClick} active={location.pathname === '/sign-in'}>Login</Nav.Link>
-              <Nav.Link as={Link} to="/sign-up" onClick={handleNavLinkClick} active={location.pathname === '/sign-up'}>Sign up</Nav.Link>
+              <Nav.Link as={Link} to="/sign-in" 
+              onClick={handleNavLinkClick} active={location.pathname === '/sign-in'}>Sign in</Nav.Link>
+              <Nav.Link as={Link} to="/sign-up" 
+              onClick={handleNavLinkClick} active={location.pathname === '/sign-up'}>Sign up</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

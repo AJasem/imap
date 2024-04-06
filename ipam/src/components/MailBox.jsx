@@ -6,6 +6,7 @@ import MailBoxNav from "./MailBoxNav";
 import MsgList from "./MsgList";
 import SendButton from "./SendBtn";
 import MsgContent from "./MsgContent";
+import { SendModalProvider } from "../context/SendModalContext";
 
 const MailBox = () => {
   const [messages, setMessages] = useState([]);
@@ -125,6 +126,7 @@ const fetchMessages = async (ENDPOINT) => {
   };
 
   return (
+    <SendModalProvider>
     <div className="box-container">
       <MailBoxNav handleSwitch={handleSwitch}/>
       <div className="box">
@@ -138,12 +140,15 @@ const fetchMessages = async (ENDPOINT) => {
             )}
           </div>
         ) : (
+      
        <MsgContent selectedMessage={selectedMessage} handleNextMessage={handleNextMessage}
         handlePrevMessage={handlePrevMessage} handleBackToList={handleBackToList} messages={messages}
          selectedIndex={selectedIndex} />
+      
         )}
       </div>
     </div>
+    </SendModalProvider>
   );
 };
 

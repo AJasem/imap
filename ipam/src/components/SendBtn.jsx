@@ -1,28 +1,35 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Button, Modal, Form, Input, Upload } from "antd";
 import { SendOutlined, UploadOutlined } from "@ant-design/icons";
 import useSendEmail from "../hooks/useSend";
+import { useSendModal } from "../context/SendModalContext.jsx";
 
-const SendButton = () => {
-  const [open, setOpen] = useState(false);
+const SendButton = ({to}) => {
+  
   const [fileList, setFileList] = useState([]);
   const { loading, sendEmail } = useSendEmail();
 
-  const handleClick = () => {
-    setOpen(true);
+  const { openModal , closeModal , isOpen} = useSendModal();
+ const handleClick = () => {
+    openModal();
   };
 
   const handleOk = async () => {
     const formValues = await form.validateFields();
-    setOpen(false);
+    closeModal();
     sendEmail(formValues, fileList);
   };
 
   const handleCancel = () => {
-    setOpen(false);
+    closeModal();
   };
 
   const [form] = Form.useForm();
+  useEffect(() => {
+    if (to) {
+      form.setFieldsValue({ to });
+    }
+  }, [to]);
 
   return (
     <>
@@ -45,7 +52,7 @@ const SendButton = () => {
       </Button>
       <Modal
         title="Send Email"
-        open={open}
+        visible={isOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Send"

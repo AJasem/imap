@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useState , useEffect } from "react";
 import { Typography } from "antd";
 import SendButton from "./SendBtn";
+import { SendModalProvider } from "../context/SendModalContext";
 
 function MailBoxNav({handleSwitch}) {
     const navigate = useNavigate();
@@ -50,7 +51,9 @@ function MailBoxNav({handleSwitch}) {
         <Popover content={<Navbar handleSwitch={handleSwitch}/>}>
           <Button className="menu" >Menu</Button>
         </Popover>
+       
         <SendButton />
+       
       </div>
       
       <Button

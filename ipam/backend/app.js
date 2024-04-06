@@ -82,8 +82,7 @@ app.post("/sign-up", async (req, res) => {
     }
     const token = jwt.sign(
       { email: req.body.email, password: req.body.password },
-      secretKey,
-      { expiresIn: "1h" }
+      secretKey
     );
     deleteAccountAfterTime(deleteTime, req.body.email);
     const deleteTimeStamp =

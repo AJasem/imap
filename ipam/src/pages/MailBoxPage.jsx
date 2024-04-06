@@ -1,11 +1,13 @@
 import MailBox from "../components/MailBox.jsx";
 import React from "react";
-import SendButton from "../components/SendBtn";
+import { SendModalProvider } from "../context/SendModalContext.jsx";
 
 function MailBoxPage() {
   return (
     <div>
+   
       <MailBox />
+      
     </div>
   );
 }
