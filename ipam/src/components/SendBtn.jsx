@@ -4,7 +4,7 @@ import { SendOutlined, UploadOutlined } from "@ant-design/icons";
 import useSendEmail from "../hooks/useSend";
 import { useSendModal } from "../context/SendModalContext.jsx";
 
-const SendButton = ({to}) => {
+const SendButton = () => {
   
   const [fileList, setFileList] = useState([]);
   const { loading, sendEmail } = useSendEmail();
@@ -25,11 +25,7 @@ const SendButton = ({to}) => {
   };
 
   const [form] = Form.useForm();
-  useEffect(() => {
-    if (to) {
-      form.setFieldsValue({ to });
-    }
-  }, [to]);
+
 
   return (
     <>
