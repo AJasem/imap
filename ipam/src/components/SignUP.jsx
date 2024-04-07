@@ -24,21 +24,21 @@ function SignUp() {
             },
           ]}
         >
-          <Input placeholder="Enter email" />
+          <Input placeholder="Enter email" className="Cypress-email"/>
         </Form.Item>
 
         <Form.Item
           name="password"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
-          <Input.Password placeholder="Enter password" />
+          <Input.Password placeholder="Enter password" className="Cypress-pass"/>
         </Form.Item>
 
         <Form.Item
           name="deletionTime"
           rules={[{ required: true, message: "Please select deletion time!" }]}
         >  
-          <Select placeholder="Select deletion time">
+          <Select placeholder="Select deletion time" className="Cypress-select">
             <Option value="1">1 day</Option>
             <Option value="3">3 days</Option>
             <Option value="7">1 week</Option>

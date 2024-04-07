@@ -8,7 +8,7 @@ const useSignUp = () => {
   return async (values) => {
     try {
       const response = await axios.post(
-        "http://localhost:3005/sign-up",
+        "https://api.ahmads.dev/sign-up",
         values
       );
       const data = response.data;

@@ -18,13 +18,13 @@ function Login() {
           name="email"
           rules={[{ required: true, message: "Please input your email!" }]}
         >
-          <Input placeholder="Enter email" />
+          <Input placeholder="Enter email" className="Cypress-email" />
         </Form.Item>
         <Form.Item
           name="password"
           rules={[{ required: true, message: "@ahmads.dev" }]}
         >
-          <Input.Password placeholder="Enter password" />
+          <Input.Password placeholder="Enter password" className="Cypress-pass"/>
         </Form.Item>
         <Form.Item>
           Don't have an account? <Link to="/sign-up" className="custom-link">Sign up</Link>
