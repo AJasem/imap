@@ -129,8 +129,12 @@ const fetchMessages = async (ENDPOINT) => {
     <div className="box-container">
       <MailBoxNav handleSwitch={handleSwitch}/>
       <div className="box">
+       
         {selectedMessage === null ? (
           <div className="msg-list">
+            <div className="msg-list-header">
+             {ENDPOINT === 'sent' ?  <h1>Sent</h1> : <h1>Inbox</h1>}
+             </div>
             {messages.length === 0 ? (
               <Typography.Text>No messages to display</Typography.Text>
             ) : (

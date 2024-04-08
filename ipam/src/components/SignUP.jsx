@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const { Option } = Select;
 
 function SignUp() {
-  const signUp = useSignUp();
+  const { loading, signUp } = useSignUp();
   const onFinish = (values) => {
     signUp(values);
   };
@@ -52,7 +52,7 @@ function SignUp() {
          </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="s-btn">
+          <Button type="primary" htmlType="submit" loading={loading} className="s-btn">
             Sign Up
           </Button>
         </Form.Item>

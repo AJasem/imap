@@ -1,16 +1,20 @@
 import { message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const useSignUp = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  return async (values) => {
+  const signUp =  async (values) => {
+    setLoading(true);
     try {
       const response = await axios.post(
         "https://api.ahmads.dev/sign-up",
         values
       );
+      
       const data = response.data;
 
       if (response.status === 200) {
@@ -30,8 +34,12 @@ const useSignUp = () => {
       } else {
         message.error(`${error.message}`);
       }
+    } finally {
+      setLoading(false);
     }
+   
   }
+  return { loading, signUp };
 }
 
 export default useSignUp;
