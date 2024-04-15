@@ -1,5 +1,4 @@
 // https://661545a02812521d6f7d97e0--lovely-otter-b1036e.netlify.app/sign-up
-
 import React from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
