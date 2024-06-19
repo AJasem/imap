@@ -1,4 +1,6 @@
 const mongodb = require("mongodb");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const updateDatabase = async (email, timeStamp) => {
   const client = new mongodb.MongoClient(process.env.MongoURL);

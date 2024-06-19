@@ -29,7 +29,7 @@ const useSendEmail = () => {
 
     try {
       const response = await axios.post(
-        "https://api.ahmads.dev/send-email",
+        "http://localhost:3000/send-email",
         data,
         {
           headers: {
