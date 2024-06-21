@@ -48,5 +48,8 @@ const deleteEmail = async (email) => {
     await client.close();
   }
 };
-
-module.exports = { checkTimeExists, updateDatabase, deleteEmail };
+module.exports = {
+  checkTimeExists,
+  updateDatabase,
+  deleteEmail,
+};

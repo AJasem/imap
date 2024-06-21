@@ -14,6 +14,6 @@ emailRoutes.get("/fetch-emails", auth, fetch);
 emailRoutes.get("/sent", auth, fetch);
 emailRoutes.post("/mark-as-seen", auth, seen);
 emailRoutes.post("/send-email", auth, send);
-emailRoutes.post("/sign-up", signUp);
+emailRoutes.post("/sign-up", auth, signUp);
 
 module.exports = emailRoutes;

@@ -30,7 +30,7 @@ const signUp = async (req, res) => {
       } catch (error) {
         console.error("Error deleting email address:", error);
       }
-    }, Number(deleteTime) * 60 * 1000);
+    }, Number(deleteTime) * 24 * 60 * 60 * 1000);
   };
 
   // app.post("/sign-up", async (req, res) => {

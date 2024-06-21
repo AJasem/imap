@@ -6,7 +6,7 @@ import MailBoxNav from "./MailBoxNav";
 import MsgList from "./MsgList";
 import MsgContent from "./MsgContent";
 import { SendModalProvider } from "../context/SendModalContext";
-
+import { useNavigate } from "react-router-dom";
 const MailBox = () => {
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
@@ -15,12 +15,12 @@ const MailBox = () => {
   const auth = useRequireAuth();
 const fetchMessages = async (ENDPOINT) => {
     try {
-      if (!auth) {
+      if (!auth) { 
         return;
       }
       const token = JSON.parse(localStorage.getItem("token"));
       const response = await axios.get(
-        `https://api.ahmads.dev/${ENDPOINT}`,
+        `http://localhost:3000/${ENDPOINT}`,
         {
           headers: {
             Authorization: token,

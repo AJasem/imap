@@ -26,7 +26,7 @@ function MailBoxNav({handleSwitch}) {
   
       if (remainingTimeInMillis <= 0) {
         clearInterval(timer);
-        localStorage.clear();
+        localStorage.removeItem("token");
         navigate("/sign-in"); 
       } else {
         const remainingDays = Math.floor(remainingTimeInMillis / (1000 * 60 * 60 * 24));
