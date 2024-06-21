@@ -4,6 +4,7 @@ import useRequireAuth from "../hooks/useRequireAuth";
 import { Typography, Button } from "antd";
 import MailBoxNav from "./MailBoxNav";
 import MsgList from "./MsgList";
+import Footer from "./Footer";
 import MsgContent from "./MsgContent";
 import { SendModalProvider } from "../context/SendModalContext";
 import { useNavigate } from "react-router-dom";
@@ -55,7 +56,7 @@ const fetchMessages = async (ENDPOINT) => {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
       const response = await axios.post(
-        "https://api.ahmads.dev/mark-as-seen",
+        "http://localhost:3000/mark-as-seen",
         {
           uid: message.uid,
         },
@@ -86,7 +87,7 @@ const fetchMessages = async (ENDPOINT) => {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
       const response = await axios.delete(
-        `https://api.ahmads.dev/delete-message/${ENDPOINT}/${uid}`, 
+        `http://localhost:3000/delete-message/${ENDPOINT}/${uid}`, 
         {
           headers: {
             Authorization: token,
@@ -150,6 +151,7 @@ const fetchMessages = async (ENDPOINT) => {
       
         )}
       </div>
+      <Footer />
     </div>
     </SendModalProvider>
   );

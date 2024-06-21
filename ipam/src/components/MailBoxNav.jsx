@@ -12,6 +12,7 @@ function MailBoxNav({handleSwitch}) {
     const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("deleteTimeStamp");
     navigate("/sign-in");
   };
   const [remainingTime, setRemainingTime] = useState(null);

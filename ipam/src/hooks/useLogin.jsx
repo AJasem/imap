@@ -18,7 +18,6 @@ const useLogin = () => {
       });
       const data = response.data;
       if (response.status === 200) {
-        localStorage.clear();
         localStorage.setItem("token", JSON.stringify(data.token));
         localStorage.setItem("deleteTimeStamp", JSON.stringify(data.deleteTimeStamp));
         navigate("/mailbox");

@@ -120,9 +120,7 @@ async function fetchEmailsFromMailbox(mailboxName, req, res) {
       }
     });
 
-    imap.once("end", function () {
-      console.log("Connection ended");
-    });
+    imap.once("end", function () {});
 
     imap.connect();
   } catch (error) {
