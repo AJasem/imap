@@ -23,8 +23,7 @@ const login = async (req, res) => {
         secretKey
       );
       const { timeStamp } = user;
-
-      res.json({ token, timeStamp });
+      res.json({ token, deleteTimeStamp: timeStamp });
     } else {
       res.status(401).json({ error: "Invalid credentials" });
     }
