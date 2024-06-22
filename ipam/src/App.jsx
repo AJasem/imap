@@ -1,4 +1,3 @@
-// https://661545a02812521d6f7d97e0--lovely-otter-b1036e.netlify.app/sign-up
 import React from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -7,6 +6,7 @@ import MailBox from "./components/MailBox.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import About from "./pages/About.jsx";
+import Api from "./pages/Api.jsx";
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/mailbox" element={<MailBox />} />
           <Route path="/about" element={<About />} />
+          <Route path="api" element={<Api/>} />
           <Route path="*" element={<NoMatch />} />
         </Routes>
       </div>
