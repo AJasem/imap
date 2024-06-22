@@ -1,12 +1,14 @@
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const dotenv = require("dotenv");
+const bcrypt = require("bcrypt");
 
 const { updateDatabase, deleteEmail } = require("../db/database.js");
 
 dotenv.config();
 
 const secretKey = process.env.secretKey;
+
 const signUp = async (req, res) => {
   const deleteAccountAfterTime = (deleteTime, email) => {
     setTimeout(async () => {
@@ -33,14 +35,18 @@ const signUp = async (req, res) => {
     }, Number(deleteTime) * 24 * 60 * 60 * 1000);
   };
 
-  // app.post("/sign-up", async (req, res) => {
   try {
+    const { email, password, deletionTime } = req.body;
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const data = {
-      email: req.body.email,
-      password: req.body.password,
+      email: email,
+      password: hashedPassword,
       domain: "ahmads.dev",
     };
-    const deleteTime = req.body.deletionTime;
+
     const response = await axios.post(
       `https://premium257.web-hosting.com:2083/execute/Email/add_pop`,
       data,
@@ -54,14 +60,16 @@ const signUp = async (req, res) => {
     if (response.data.errors) {
       return res.status(400).json({ error: response.data.errors });
     }
-    const token = jwt.sign(
-      { email: req.body.email, password: req.body.password },
-      secretKey
-    );
-    deleteAccountAfterTime(deleteTime, req.body.email);
+
+    const token = jwt.sign({ email, password: hashedPassword }, secretKey);
+
+    deleteAccountAfterTime(deletionTime, email);
+
     const deleteTimeStamp =
-      new Date().getTime() + Number(deleteTime) * 24 * 60 * 60 * 1000;
-    await updateDatabase(req.body.email, deleteTimeStamp);
+      new Date().getTime() + Number(deletionTime) * 24 * 60 * 60 * 1000;
+
+    await updateDatabase(email, deleteTimeStamp , hashedPassword);
+
     res.json({ token, deleteTimeStamp });
   } catch (error) {
     console.error("Error creating email address:", error);

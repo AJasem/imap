@@ -1,19 +1,30 @@
 const jwt = require("jsonwebtoken");
 const Imap = require("imap");
 const { checkTimeExists } = require("../db/database.js");
+const bcrypt = require("bcrypt");
 
 const login = async (req, res) => {
   // app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const userExists = await checkUserExists(email, password);
+    const user = await checkTimeExists(email);
+    const { hashedPassword } = user;
+    const passwordMatch = await bcrypt.compare(password, hashedPassword);
+    if (!passwordMatch) {
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
+    const userExists = await checkUserExists(email, hashedPassword);
 
     if (userExists) {
-      const token = jwt.sign({ email: email, password: password }, secretKey);
-      const deleteTimeStamp = await checkTimeExists(email);
+      const token = jwt.sign(
+        { email: email, password: hashedPassword },
+        secretKey
+      );
+      const { timeStamp } = user;
 
-      res.json({ token, deleteTimeStamp });
+      res.json({ token, timeStamp });
     } else {
       res.status(401).json({ error: "Invalid credentials" });
     }
