@@ -21,7 +21,7 @@ const fetchMessages = async (ENDPOINT) => {
       }
       const token = JSON.parse(localStorage.getItem("token"));
       const response = await axios.get(
-        `http://localhost:3000/${ENDPOINT}`,
+        `https://api.ahmads.dev/${ENDPOINT}`,
         {
           headers: {
             Authorization: token,
@@ -56,7 +56,7 @@ const fetchMessages = async (ENDPOINT) => {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
       const response = await axios.post(
-        "http://localhost:3000/mark-as-seen",
+        "https://api.ahmads.dev/mark-as-seen",
         {
           uid: message.uid,
         },
@@ -87,7 +87,7 @@ const fetchMessages = async (ENDPOINT) => {
     const token = JSON.parse(localStorage.getItem("token"));
     try {
       const response = await axios.delete(
-        `http://localhost:3000/delete-message/${ENDPOINT}/${uid}`, 
+        `https://api.ahmads.dev/delete-message/${ENDPOINT}/${uid}`, 
         {
           headers: {
             Authorization: token,

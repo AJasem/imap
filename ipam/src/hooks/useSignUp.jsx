@@ -11,7 +11,7 @@ const useSignUp = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/sign-up",
+        "https://api.ahmads.dev/sign-up",
         values
       );
       
